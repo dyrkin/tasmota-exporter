@@ -2,22 +2,20 @@ package metrics
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
-	"sync"
 )
 
 type Metrics struct {
 	pm     *PlainMetrics
 	gauges map[string]*prometheus.GaugeVec
-	lock   *sync.Mutex
 }
 
 func NewMetrics(pm *PlainMetrics) *Metrics {
-	return &Metrics{pm, map[string]*prometheus.GaugeVec{}, &sync.Mutex{}}
+	return &Metrics{pm, map[string]*prometheus.GaugeVec{}}
 }
 
 func (m *Metrics) Refresh() {
-	m.lock.Lock()
-	defer m.lock.Unlock()
+	m.pm.lock.Lock()
+	defer m.pm.lock.Unlock()
 	for source, sourceMetrics := range m.pm.metrics {
 		statusTopic, topicExists := sourceMetrics["status_topic"].(string)
 		statusNetHostname, hostnameExists := sourceMetrics["status_net_hostname"].(string)
