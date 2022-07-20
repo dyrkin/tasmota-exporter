@@ -1,0 +1,22 @@
+---
+kind: pipeline
+name: amd64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: publish
+    image: plugins/docker
+    settings:
+      repo: eugenezadyra/tasmota-exporter
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile
+      context: .
+      when:
+        branch: master
+        event: push
