@@ -54,11 +54,11 @@ func (mc *MqttClient) SendCommand(topic, payload string) error {
 }
 
 func (mc *MqttClient) connectionHandler(_ mqtt.Client) {
-	log.Printf("connected")
+	log.Printf("mqtt connected")
 }
 
 func (mc *MqttClient) connectionLostHandler(_ mqtt.Client, err error) {
-	log.Printf("disconnected. reason: %s", err)
+	log.Printf("mqtt disconnected. reason: %s", err)
 	log.Println("exiting...")
 	syscall.Exit(1)
 }

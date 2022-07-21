@@ -3,7 +3,7 @@ services:
   tasmota-exporter:
     image: eugenezadyra/tasmota-exporter:latest
     environment:
-      MQTT_HOSTNAME: localhost
+      MQTT_HOSTNAME: 192.168.1.10
       MQTT_PORT: 1883
       MQTT_USERNAME: user
       MQTT_PASSWORD: password

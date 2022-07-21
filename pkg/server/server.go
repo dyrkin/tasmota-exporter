@@ -11,6 +11,7 @@ import (
 
 type Server struct {
 	httpServer *http.Server
+	port       int
 }
 
 func NewServer(port int, metrics *metrics.Metrics) *Server {
@@ -22,6 +23,7 @@ func NewServer(port int, metrics *metrics.Metrics) *Server {
 
 	s := &Server{
 		httpServer: httpServer,
+		port:       port,
 	}
 
 	mux.HandleFunc("/metrics", func(writer http.ResponseWriter, request *http.Request) {
@@ -33,7 +35,7 @@ func NewServer(port int, metrics *metrics.Metrics) *Server {
 }
 
 func (s *Server) Start() {
-	log.Println("Starting server")
+	log.Printf("Started listening on: %d", s.port)
 
 	err := s.httpServer.ListenAndServe()
 	if err != nil {
