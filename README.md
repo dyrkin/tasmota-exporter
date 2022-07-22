@@ -3,7 +3,8 @@
 [![Build Status](https://cloud.drone.io/api/badges/dyrkin/tasmota-exporter/status.svg?branch=master)](https://cloud.drone.io/dyrkin/luxmed-bot)
 [![Docker Hub](https://img.shields.io/badge/image-latest-blue.svg?logo=docker&style=flat)](https://hub.docker.com/r/eugenezadyra/tasmota-exporter/tags/)
 
-A Prometheus exporter for [Tasmota-enabled](https://tasmota.github.io/docs) devices
+A Prometheus exporter for [Tasmota-enabled](https://tasmota.github.io/docs) devices.  
+It subscribes to the topics `tele/+/+` and `stat/++` to which Tasmota devices send their updates.
 
 ![Grafana dashboard](grafana/dashboard.png)
 
@@ -76,6 +77,14 @@ services:
     ports:
       - '9092:9092'
     restart: unless-stopped
+```
+
+```bash
+#run in the background
+docker-compose up -d
+#update to the latest version and restart
+docker-compose pull
+docker-compose restart
 ```
 
 Once the exporter is running, you also have to update your `prometheus.yml` configuration to let it scrape the exporter:
