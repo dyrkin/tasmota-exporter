@@ -24,10 +24,3 @@ func main() {
 	s := server.NewServer(v.serverPort, m)
 	s.Start()
 }
-
-func orDefault(value string, def string) string {
-	if value == "" {
-		return def
-	}
-	return value
-}

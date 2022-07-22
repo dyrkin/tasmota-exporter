@@ -28,3 +28,10 @@ func ReadEnv() *vars {
 	v.serverPort = serverPort
 	return v
 }
+
+func orDefault(value string, def string) string {
+	if value == "" {
+		return def
+	}
+	return value
+}
