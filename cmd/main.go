@@ -12,7 +12,7 @@ import (
 func main() {
 	v := ReadEnv()
 	pm := metrics.NewPlainMetrics()
-	m := metrics.NewMetrics(pm)
+	m := metrics.NewMetrics(pm, v.removeWhenInactiveMinutes)
 	mqttClient := mqttclient.NewMqttClient(v.mqttHost, v.mqttPort, v.mqttUsername, v.mqttPassword)
 	if err := mqttClient.Connect(); err != nil {
 		log.Fatalf("can't connect to mqtt broker: %s", err)

@@ -1,6 +1,6 @@
 # Tasmota Prometheus Exporter
 
-[![Build Status](https://cloud.drone.io/api/badges/dyrkin/tasmota-exporter/status.svg?branch=master)](https://cloud.drone.io/dyrkin/luxmed-bot)
+[![Build Status](https://cloud.drone.io/api/badges/dyrkin/tasmota-exporter/status.svg?branch=master)](https://cloud.drone.io/dyrkin/tasmota-exporter)
 [![Docker Hub](https://img.shields.io/badge/image-latest-blue.svg?logo=docker&style=flat)](https://hub.docker.com/r/eugenezadyra/tasmota-exporter/tags/)
 
 A Prometheus exporter for [Tasmota-enabled](https://tasmota.github.io/docs) devices.  
@@ -33,6 +33,7 @@ MQTT_PORT //default is 1883
 MQTT_USERNAME //default is empty
 MQTT_PASSWORD //default is empty
 PROMETHEUS_EXPORTER_PORT //listening port. Default is 9092
+REMOVE_WHEN_INACTIVE_MINUTES //optional. Default is 1. If the device is inactive for more than 1 minute, it will be removed from the list of active devices
 ```
 
 Then run it using:

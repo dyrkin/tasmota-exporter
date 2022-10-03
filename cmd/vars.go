@@ -7,8 +7,8 @@ import (
 )
 
 type vars struct {
-	mqttHost, mqttUsername, mqttPassword string
-	mqttPort, serverPort                 int
+	mqttHost, mqttUsername, mqttPassword            string
+	mqttPort, serverPort, removeWhenInactiveMinutes int
 }
 
 func ReadEnv() *vars {
@@ -26,6 +26,11 @@ func ReadEnv() *vars {
 		log.Fatalf("can't parse provided server port: %s", err)
 	}
 	v.serverPort = serverPort
+	removeWhenInactiveMinutes, err := strconv.Atoi(orDefault(os.Getenv("REMOVE_WHEN_INACTIVE_MINUTES"), "1"))
+	if err != nil {
+		log.Fatalf("can't parse provided timeout: %s", err)
+	}
+	v.removeWhenInactiveMinutes = removeWhenInactiveMinutes
 	return v
 }
 
