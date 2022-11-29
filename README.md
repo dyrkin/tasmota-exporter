@@ -32,6 +32,7 @@ MQTT_HOSTNAME //default is localhost
 MQTT_PORT //default is 1883
 MQTT_USERNAME //default is empty
 MQTT_PASSWORD //default is empty
+MQTT_TOPICS //default is "tele/+/+, stat/+/+". If you're using deeper topics, you can set as "tele/#, stat/#"
 PROMETHEUS_EXPORTER_PORT //listening port. Default is 9092
 REMOVE_WHEN_INACTIVE_MINUTES //optional. Default is 1. If the device is inactive for more than 1 minute, it will be removed from the list of active devices
 ```

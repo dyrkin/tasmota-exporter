@@ -4,11 +4,13 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 )
 
 type vars struct {
 	mqttHost, mqttUsername, mqttPassword            string
 	mqttPort, serverPort, removeWhenInactiveMinutes int
+	mqttTopics                                      []string
 }
 
 func ReadEnv() *vars {
@@ -31,6 +33,7 @@ func ReadEnv() *vars {
 		log.Fatalf("can't parse provided timeout: %s", err)
 	}
 	v.removeWhenInactiveMinutes = removeWhenInactiveMinutes
+	v.mqttTopics = orDefaultList(os.Getenv("MQTT_TOPICS"), "tele/+/+, stat/+/+")
 	return v
 }
 
@@ -39,4 +42,20 @@ func orDefault(value string, def string) string {
 		return def
 	}
 	return value
+}
+
+// read env variable, split per comma, trim the values, and return them as a list of strings
+func orDefaultList(value string, def string) []string {
+	if value == "" {
+		return splitAndTrim(def)
+	}
+	return splitAndTrim(value)
+}
+
+func splitAndTrim(value string) []string {
+	s := strings.Split(value, ",")
+	for i, v := range s {
+		s[i] = strings.TrimSpace(v)
+	}
+	return s
 }
