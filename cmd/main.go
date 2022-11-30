@@ -22,7 +22,7 @@ func main() {
 	}
 
 	e := engine.NewEngine(mqttClient, pm)
-	e.Subscribe([]string{"tele/+/+", "stat/+/+"})
+	e.Subscribe(v.mqttTopics)
 
 	s := server.NewServer(v.serverPort, m)
 	s.Start()
