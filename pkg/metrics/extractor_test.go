@@ -16,6 +16,7 @@ func TestExtract(t *testing.T) {
 {
   "Status": {
     "DeviceName": "nas_outlet",
+    "DeviceName-alias": "outlet",
     "Topic": "nas-outlet",
     "SaveData": 1
   },
@@ -40,4 +41,9 @@ func TestExtract(t *testing.T) {
 	if extracted["status_device_name"] != "nas_outlet" {
 		t.Fatalf("wrong value: %s", extracted["status_device_name"])
 	}
+
+	if extracted["status_device_name_alias"] != "outlet" {
+		t.Fatalf("wrong value: %s", extracted["status_device_name_alias"])
+	}
+
 }

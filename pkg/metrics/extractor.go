@@ -8,6 +8,7 @@ import (
 
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+var matchInvalidChar = regexp.MustCompile("[-]")
 
 func Extract(message []byte) map[string]any {
 	incoming := map[string]any{}
@@ -44,5 +45,6 @@ func normalize(incoming map[string]any) map[string]any {
 func toSnakeCase(camelCase string) string {
 	snake := matchFirstCap.ReplaceAllString(camelCase, "${1}_${2}")
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
-	return strings.ToLower(snake)
+	snake = matchInvalidChar.ReplaceAllString(snake, "_")
+ 	return strings.ToLower(snake)
 }
