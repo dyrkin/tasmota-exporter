@@ -17,6 +17,34 @@ steps:
         from_secret: docker_password
       dockerfile: Dockerfile
       context: .
+      tags:
+        - latest
+        - amd64-latest
+      when:
+        branch: master
+        event: push
+
+---
+kind: pipeline
+name:  arm64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: build_and_publish
+    image: plugins/docker
+    settings:
+      repo: eugenezadyra/tasmota-exporter
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      dockerfile: Dockerfile.arm64
+      context: .
+      tags:
+        - arm64-latest
       when:
         branch: master
         event: push
