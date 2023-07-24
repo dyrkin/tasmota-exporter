@@ -1,6 +1,6 @@
 # Tasmota Prometheus Exporter
 
-[![Build Status](https://cloud.drone.io/api/badges/dyrkin/tasmota-exporter/status.svg?branch=master)](https://cloud.drone.io/dyrkin/tasmota-exporter)
+[![Build Status](https://drone.rdome.net/api/badges/dyrkin/tasmota-exporter/status.svg?branch=master)](https://drone.rdome.net/dyrkin/tasmota-exporter)
 [![Docker Hub](https://img.shields.io/badge/image-latest-blue.svg?logo=docker&style=flat)](https://hub.docker.com/r/eugenezadyra/tasmota-exporter/tags/)
 
 A Prometheus exporter for [Tasmota-enabled](https://tasmota.github.io/docs) devices.  
@@ -27,7 +27,7 @@ chmod +x tasmota-exporter
 ```
 
 Before running the application, you have to define the following environment variables:
-```go
+```properties
 MQTT_HOSTNAME //default is localhost
 MQTT_PORT //default is 1883
 MQTT_USERNAME //default is empty
