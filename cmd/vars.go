@@ -8,9 +8,9 @@ import (
 )
 
 type vars struct {
-	mqttHost, mqttUsername, mqttPassword, mqttClientId                    string
-	mqttPort, serverPort, removeWhenInactiveMinutes, statusUpdateInterval int
-	mqttTopics                                                            []string
+	mqttHost, mqttUsername, mqttPassword, mqttClientId                   string
+	mqttPort, serverPort, removeWhenInactiveMinutes, statusUpdateSeconds int
+	mqttTopics                                                           []string
 }
 
 func ReadEnv() *vars {
@@ -35,11 +35,11 @@ func ReadEnv() *vars {
 	}
 	v.removeWhenInactiveMinutes = removeWhenInactiveMinutes
 	v.mqttTopics = orDefaultList(os.Getenv("MQTT_TOPICS"), "tele/+/+, stat/+/+")
-	statusUpdateInterval, err := strconv.Atoi(orDefault(os.Getenv("STATUS_UPDATE_SECONDS"), "5"))
+	statusUpdateSeconds, err := strconv.Atoi(orDefault(os.Getenv("STATUS_UPDATE_SECONDS"), "5"))
 	if err != nil {
 		log.Fatalf("can't parse provided status update interval: %s", err)
 	}
-	v.statusUpdateInterval = statusUpdateInterval
+	v.statusUpdateSeconds = statusUpdateSeconds
 	return v
 }
 

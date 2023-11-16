@@ -12,15 +12,15 @@ import (
 )
 
 type Engine struct {
-	scheduled            map[string]any
-	lock                 *sync.Mutex
-	mqttClient           *mqttclient.MqttClient
-	plainMetrics         *metrics.PlainMetrics
-	statusUpdateInterval int
+	scheduled           map[string]any
+	lock                *sync.Mutex
+	mqttClient          *mqttclient.MqttClient
+	plainMetrics        *metrics.PlainMetrics
+	statusUpdateSeconds int
 }
 
-func NewEngine(mqttClient *mqttclient.MqttClient, pm *metrics.PlainMetrics, statusUpdateInterval int) *Engine {
-	return &Engine{map[string]any{}, &sync.Mutex{}, mqttClient, pm, statusUpdateInterval}
+func NewEngine(mqttClient *mqttclient.MqttClient, pm *metrics.PlainMetrics, statusUpdateSeconds int) *Engine {
+	return &Engine{map[string]any{}, &sync.Mutex{}, mqttClient, pm, statusUpdateSeconds}
 }
 
 func (e *Engine) Subscribe(mqttListenTopics []string) {
@@ -46,9 +46,9 @@ func (e *Engine) scheduleStatusCommand(topic string) {
 		e.lock.Lock()
 		defer e.lock.Unlock()
 		if _, ok := e.scheduled[source]; !ok {
-			log.Printf("scheduling status updates for: %s", source)
+			log.Printf("scheduling %d second status updates for: %s", e.statusUpdateSeconds, source)
 			e.scheduled[source] = true
-			ticker := time.NewTicker(time.Duration(e.statusUpdateInterval) * time.Second)
+			ticker := time.NewTicker(time.Duration(e.statusUpdateSeconds) * time.Second)
 			go func() {
 				for {
 					select {

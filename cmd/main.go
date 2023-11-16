@@ -22,7 +22,7 @@ func main() {
 		log.Fatalf("can't connect to mqtt broker: %s", err)
 	}
 
-	e := engine.NewEngine(mqttClient, pm, v.statusUpdateInterval)
+	e := engine.NewEngine(mqttClient, pm, v.statusUpdateSeconds)
 	e.Subscribe(v.mqttTopics)
 
 	s := server.NewServer(v.serverPort, m)
