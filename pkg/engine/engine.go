@@ -1,24 +1,26 @@
 package engine
 
 import (
-	"github.com/dyrkin/tasmota-exporter/pkg/metrics"
-	"github.com/dyrkin/tasmota-exporter/pkg/mqttclient"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"log"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/dyrkin/tasmota-exporter/pkg/metrics"
+	"github.com/dyrkin/tasmota-exporter/pkg/mqttclient"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 type Engine struct {
-	scheduled    map[string]any
-	lock         *sync.Mutex
-	mqttClient   *mqttclient.MqttClient
-	plainMetrics *metrics.PlainMetrics
+	scheduled           map[string]any
+	lock                *sync.Mutex
+	mqttClient          *mqttclient.MqttClient
+	plainMetrics        *metrics.PlainMetrics
+	statusUpdateSeconds int
 }
 
-func NewEngine(mqttClient *mqttclient.MqttClient, pm *metrics.PlainMetrics) *Engine {
-	return &Engine{map[string]any{}, &sync.Mutex{}, mqttClient, pm}
+func NewEngine(mqttClient *mqttclient.MqttClient, pm *metrics.PlainMetrics, statusUpdateSeconds int) *Engine {
+	return &Engine{map[string]any{}, &sync.Mutex{}, mqttClient, pm, statusUpdateSeconds}
 }
 
 func (e *Engine) Subscribe(mqttListenTopics []string) {
@@ -44,9 +46,9 @@ func (e *Engine) scheduleStatusCommand(topic string) {
 		e.lock.Lock()
 		defer e.lock.Unlock()
 		if _, ok := e.scheduled[source]; !ok {
-			log.Printf("scheduling status updates for: %s", source)
+			log.Printf("scheduling %d second status updates for: %s", e.statusUpdateSeconds, source)
 			e.scheduled[source] = true
-			ticker := time.NewTicker(5 * time.Second)
+			ticker := time.NewTicker(time.Duration(e.statusUpdateSeconds) * time.Second)
 			go func() {
 				for {
 					select {

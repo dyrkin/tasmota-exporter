@@ -8,9 +8,9 @@ import (
 )
 
 type vars struct {
-	mqttHost, mqttUsername, mqttPassword            string
-	mqttPort, serverPort, removeWhenInactiveMinutes int
-	mqttTopics                                      []string
+	mqttHost, mqttUsername, mqttPassword, mqttClientId                   string
+	mqttPort, serverPort, removeWhenInactiveMinutes, statusUpdateSeconds int
+	mqttTopics                                                           []string
 }
 
 func ReadEnv() *vars {
@@ -23,6 +23,7 @@ func ReadEnv() *vars {
 	v.mqttPort = mqttPort
 	v.mqttUsername = orDefault(os.Getenv("MQTT_USERNAME"), "")
 	v.mqttPassword = orDefault(os.Getenv("MQTT_PASSWORD"), "")
+	v.mqttClientId = orDefault(os.Getenv("MQTT_CLIENT_ID"), "prometheus_tasmota_exporter")
 	serverPort, err := strconv.Atoi(orDefault(os.Getenv("PROMETHEUS_EXPORTER_PORT"), "9092"))
 	if err != nil {
 		log.Fatalf("can't parse provided server port: %s", err)
@@ -34,6 +35,11 @@ func ReadEnv() *vars {
 	}
 	v.removeWhenInactiveMinutes = removeWhenInactiveMinutes
 	v.mqttTopics = orDefaultList(os.Getenv("MQTT_TOPICS"), "tele/+/+, stat/+/+")
+	statusUpdateSeconds, err := strconv.Atoi(orDefault(os.Getenv("STATUS_UPDATE_SECONDS"), "5"))
+	if err != nil {
+		log.Fatalf("can't parse provided status update interval: %s", err)
+	}
+	v.statusUpdateSeconds = statusUpdateSeconds
 	return v
 }
 

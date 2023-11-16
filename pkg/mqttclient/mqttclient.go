@@ -12,11 +12,11 @@ type MqttClient struct {
 	c mqtt.Client
 }
 
-func NewMqttClient(host string, port int, user, password string) *MqttClient {
+func NewMqttClient(host string, port int, user, password string, client_id string) *MqttClient {
 	mqttClient := &MqttClient{}
 	options := mqtt.NewClientOptions()
 	options.AddBroker(fmt.Sprintf("tcp://%s:%d", host, port))
-	options.SetClientID("prometheus_tasmota_exporter")
+	options.SetClientID(client_id)
 	options.SetUsername(user)
 	options.SetPassword(password)
 	options.SetCleanSession(false)

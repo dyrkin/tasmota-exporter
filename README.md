@@ -32,9 +32,17 @@ MQTT_HOSTNAME //default is localhost
 MQTT_PORT //default is 1883
 MQTT_USERNAME //default is empty
 MQTT_PASSWORD //default is empty
+MQTT_CLIENT_ID //default is prometheus_tasmota_exporter
 MQTT_TOPICS //default is "tele/+/+, stat/+/+". If you're using deeper topics, you can set as "tele/#, stat/#"
 PROMETHEUS_EXPORTER_PORT //listening port. Default is 9092
 REMOVE_WHEN_INACTIVE_MINUTES //optional. Default is 1. If the device is inactive for more than 1 minute, it will be removed from the list of active devices
+STATUS_UPDATE_SECONDS //optional. Default is 5. This is how often a status update will be requested
+```
+
+You could also put the variables in a .env file and do the following:
+```
+source .env
+export $(cut -d= -f1 .env)
 ```
 
 Then run it using:
