@@ -3,6 +3,7 @@ package metrics
 import (
 	"encoding/json"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -37,6 +38,10 @@ func normalize(incoming map[string]any) map[string]any {
 			for k1, v := range converted {
 				normalized[toSnakeCase(k)+"_"+k1] = v
 			}
+		case []interface{}:
+			for i, elem := range x {
+				normalized[toSnakeCase(k)+"_"+strconv.Itoa(i)] = elem
+			}
 		}
 	}
 	return normalized
@@ -46,5 +51,5 @@ func toSnakeCase(camelCase string) string {
 	snake := matchFirstCap.ReplaceAllString(camelCase, "${1}_${2}")
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
 	snake = matchInvalidChar.ReplaceAllString(snake, "_")
- 	return strings.ToLower(snake)
+	return strings.ToLower(snake)
 }
