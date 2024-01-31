@@ -1,7 +1,8 @@
 package main
 
 import (
-	"log"
+	"log/slog"
+	"os"
 
 	"github.com/dyrkin/tasmota-exporter/pkg/engine"
 	"github.com/dyrkin/tasmota-exporter/pkg/metrics"
@@ -10,8 +11,16 @@ import (
 	"github.com/dyrkin/tasmota-exporter/pkg/server"
 )
 
+func abort(msg string, args ...any) {
+	slog.Error(msg, args...)
+	os.Exit(1)
+}
+
 func main() {
-	v := ReadEnv()
+	v, err := ReadEnv()
+	if err != nil {
+		abort("Can't read env variables, exiting.", "error", err)
+	}
 	pm := metrics.NewPlainMetrics()
 	m := metrics.NewMetrics(pm)
 	c := metrics.NewCleaner(m, v.removeWhenInactiveMinutes)
@@ -19,12 +28,16 @@ func main() {
 
 	mqttClient := mqttclient.NewMqttClient(v.mqttHost, v.mqttPort, v.mqttUsername, v.mqttPassword, v.mqttClientId)
 	if err := mqttClient.Connect(); err != nil {
-		log.Fatalf("can't connect to mqtt broker: %s", err)
+		abort("Can't connect to mqtt broker", "error", err)
 	}
 
 	e := engine.NewEngine(mqttClient, pm, v.statusUpdateSeconds)
-	e.Subscribe(v.mqttTopics)
+	if err := e.Subscribe(v.mqttTopics); err != nil {
+		abort("Can't subscribe to topics", "error", err)
+	}
 
 	s := server.NewServer(v.serverPort, m)
-	s.Start()
+	if err := s.Start(); err != nil {
+		abort("Failed to start server", "error", err)
+	}
 }

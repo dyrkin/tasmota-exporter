@@ -1,14 +1,16 @@
 package engine
 
 import (
-	"log"
+	"fmt"
+	"log/slog"
 	"strings"
 	"sync"
 	"time"
 
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+
 	"github.com/dyrkin/tasmota-exporter/pkg/metrics"
 	"github.com/dyrkin/tasmota-exporter/pkg/mqttclient"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 type Engine struct {
@@ -23,12 +25,13 @@ func NewEngine(mqttClient *mqttclient.MqttClient, pm *metrics.PlainMetrics, stat
 	return &Engine{map[string]any{}, &sync.Mutex{}, mqttClient, pm, statusUpdateSeconds}
 }
 
-func (e *Engine) Subscribe(mqttListenTopics []string) {
+func (e *Engine) Subscribe(mqttListenTopics []string) error {
 	for _, topic := range mqttListenTopics {
 		if err := e.mqttClient.Subscribe(topic, e.messageProcessor); err != nil {
-			log.Fatalf("can't subsctibe to: %s", topic)
+			return fmt.Errorf("can't subscribe to %q: %w", topic, err)
 		}
 	}
+	return nil
 }
 
 func (e *Engine) messageProcessor(_ mqtt.Client, m mqtt.Message) {
@@ -46,16 +49,16 @@ func (e *Engine) scheduleStatusCommand(topic string) {
 		e.lock.Lock()
 		defer e.lock.Unlock()
 		if _, ok := e.scheduled[source]; !ok {
-			log.Printf("scheduling %d second status updates for: %s", e.statusUpdateSeconds, source)
+			slog.Debug("scheduling status updates", "interval_sec", e.statusUpdateSeconds, "source", source)
 			e.scheduled[source] = true
 			ticker := time.NewTicker(time.Duration(e.statusUpdateSeconds) * time.Second)
 			go func() {
 				for {
 					select {
 					case <-ticker.C:
-						log.Printf("sending status update request command: %s", target)
+						slog.Debug("sending status update request", "command", target)
 						if err := e.mqttClient.SendCommand(target, ""); err != nil {
-							log.Fatalf("can't send message to: %s", target)
+							slog.Error("can't send status command", "command", target)
 						}
 					}
 				}
