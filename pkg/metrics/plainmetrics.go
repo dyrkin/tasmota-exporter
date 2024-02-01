@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"log"
+	"log/slog"
 	"strings"
 	"sync"
 	"time"
@@ -26,7 +26,7 @@ func (m *PlainMetrics) Update(topic string, data map[string]any) {
 	if len(data) > 0 {
 		segments := strings.Split(topic, "/")
 		source := strings.Join(segments[:len(segments)-1], "/")
-		log.Println("received update for: " + source)
+		slog.Debug("received update", "source", source)
 		m.lock.Lock()
 		defer m.lock.Unlock()
 

@@ -2,7 +2,7 @@ package mqttclient
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"syscall"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -53,12 +53,11 @@ func (mc *MqttClient) SendCommand(topic, payload string) error {
 	return nil
 }
 
-func (mc *MqttClient) connectionHandler(_ mqtt.Client) {
-	log.Printf("mqtt connected")
+func (mc *MqttClient) connectionHandler(c mqtt.Client) {
+	slog.Info("mqtt connected")
 }
 
 func (mc *MqttClient) connectionLostHandler(_ mqtt.Client, err error) {
-	log.Printf("mqtt disconnected. reason: %s", err)
-	log.Println("exiting...")
+	slog.Error("mqtt disconnected, exiting.", "reason", err)
 	syscall.Exit(1)
 }

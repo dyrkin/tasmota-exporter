@@ -37,6 +37,7 @@ MQTT_TOPICS //default is "tele/+/+, stat/+/+". If you're using deeper topics, yo
 PROMETHEUS_EXPORTER_PORT //listening port. Default is 9092
 REMOVE_WHEN_INACTIVE_MINUTES //optional. Default is 1. If the device is inactive for more than 1 minute, it will be removed from the list of active devices
 STATUS_UPDATE_SECONDS //optional. Default is 5. This is how often a status update will be requested
+LOG_LEVEL // default is info. Severity level for log output. Possible values: debug, info, warn, error
 ```
 
 You could also put the variables in a .env file and do the following:

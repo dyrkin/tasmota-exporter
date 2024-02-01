@@ -1,12 +1,13 @@
 package server
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 	"strconv"
 
-	"github.com/dyrkin/tasmota-exporter/pkg/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	"github.com/dyrkin/tasmota-exporter/pkg/metrics"
 )
 
 type Server struct {
@@ -34,11 +35,7 @@ func NewServer(port int, metrics *metrics.Metrics) *Server {
 	return s
 }
 
-func (s *Server) Start() {
-	log.Printf("Started listening on: %d", s.port)
-
-	err := s.httpServer.ListenAndServe()
-	if err != nil {
-		log.Fatalf("Failed to start server: %v", err)
-	}
+func (s *Server) Start() error {
+	slog.Info("Started listening", "port", s.port)
+	return s.httpServer.ListenAndServe()
 }

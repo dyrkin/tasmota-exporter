@@ -1,7 +1,7 @@
 package metrics
 
 import (
-	"log"
+	"log/slog"
 	"time"
 )
 
@@ -34,12 +34,12 @@ func (c *Cleaner) Start() {
 							}
 						}
 						delete(c.m.pm.metrics, source)
-						log.Println("removed inactive source: " + source)
+						slog.Info("removed inactive source", "source", source)
 					}
 				}
 				c.m.pm.lock.Unlock()
 			}
 		}
 	}()
-	log.Println("scheduled metrics cleanup")
+	slog.Debug("scheduled metrics cleanup")
 }
