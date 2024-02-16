@@ -25,11 +25,12 @@ func (c *Cleaner) Start() {
 					if time.Since(sourceMetrics.lastAccessed) > time.Duration(c.removeWhenInactiveMinutes)*time.Minute {
 						statusTopic, topicExists := sourceMetrics.Metrics["status_topic"].(string)
 						statusNetHostname, hostnameExists := sourceMetrics.Metrics["status_net_hostname"].(string)
+						statusNetIpAddress, ipAddressExists := sourceMetrics.Metrics["status_net_ip_address"].(string)
 						statusDeviceName, deviceNameExists := sourceMetrics.Metrics["status_device_name"].(string)
 						for pmk := range sourceMetrics.Metrics {
-							if topicExists && hostnameExists && deviceNameExists {
+							if topicExists && hostnameExists && ipAddressExists && deviceNameExists {
 								if gauge, ok := c.m.gauges[pmk]; ok {
-									gauge.DeleteLabelValues(source, statusTopic, statusNetHostname, statusDeviceName)
+									gauge.DeleteLabelValues(source, statusTopic, statusNetHostname, statusNetIpAddress, statusDeviceName)
 								}
 							}
 						}
